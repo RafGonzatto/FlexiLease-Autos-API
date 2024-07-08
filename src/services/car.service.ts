@@ -1,6 +1,8 @@
-import { DeleteResult, ObjectId } from 'typeorm'
+import { DeleteResult, FindManyOptions } from 'typeorm'
+import { ObjectId } from 'mongodb';
 import { ICar } from '../interfaces/car.interface'
 import { ICarRepository } from '../repositories.interfaces/car.repository.interface'
+import { IReserveRepository } from '../repositories.interfaces/reserve.repository.interface'
 import createError from 'http-errors'
 import { inject, injectable } from 'tsyringe'
 import { Car } from '../entities/car.entity'
@@ -11,6 +13,8 @@ class CarService {
   constructor(
     @inject('CarRepository')
     private carRepository: ICarRepository,
+    @inject('ReserveRepository')
+    private reserveRepository: IReserveRepository,
   ) {}
 
   async createCar(carData: ICar): Promise<ICar> {
@@ -29,20 +33,46 @@ class CarService {
     const createdCar  = await this.carRepository.createCar(carResult);
     return createdCar;
   }
-  async findCars(filters: any, limit: number, offset: number) {
-    const [cars, total] = await this.carRepository.findCars(filters, limit, offset);
+  async getAllCars(filters: any, limit?: number, offset?: number) {
+    const whereConditions: any = {};
+    
+    if (filters._id) whereConditions._id = new ObjectId(filters._id);
+    if (filters.model) whereConditions.model = { $regex: `.*${filters.model}.*`, $options: 'i' };
+    if (filters.color) whereConditions.color = { $regex: `.*${filters.color}.*`, $options: 'i' };
+    if (filters.year) whereConditions.year = { $regex: `.*${filters.year}.*`, $options: 'i' };
+    if (filters.value_per_day) whereConditions.value_per_day = { $regex: `.*${filters.value_per_day}.*`, $options: 'i' };
 
-    return {
-      cars,
-      total,
-      limit,
-      offset,
-      offsets: Math.ceil(total / limit),
-    };
+    if ((filters.accessories_description && filters.accessories_description.length > 0) || (filters.accessories_id && filters.accessories_id.length > 0)) {
+      const elemMatchConditions: any = {};
+      
+      if (filters.accessories_description && filters.accessories_description.length > 0) {
+          elemMatchConditions.description = { $in: filters.accessories_description.map((description: string) => new RegExp(description, 'i')) };
+      }
+
+      if (filters.accessories_id && filters.accessories_id.length > 0) {
+        
+          elemMatchConditions._id = { $in: filters.accessories_id.map((id: string) => new ObjectId(id)) };
+        
+    }
+
+      whereConditions.accessories = { $elemMatch: elemMatchConditions };
   }
+
+  if (filters.number_of_passengers) whereConditions.number_of_passengers = filters.number_of_passengers;
+    const options: FindManyOptions<Car> = {
+        where: whereConditions,
+        take: limit,
+        skip: offset,
+    };
+
+    const { cars, total } = await this.carRepository.findAllWithPagination(options);
+
+    const offsets = Math.ceil(total / limit);
+
+    return { cars, total, limit, offset, offsets };
+}
   async getCarById(id: string): Promise<ICar | null> {
     const carResult = await this.carRepository.getCarById(id);
-    delete carResult._id;
     return carResult
   }
   async updateCar(id: string, carData: Partial<ICar>): Promise<ICar | null> {
@@ -75,13 +105,18 @@ class CarService {
     const updatedCar = await this.carRepository.updateCar(existingCar);
     return updatedCar;
   }
-  async deleteCar(id: string): Promise<boolean> {
-    const result =  await this.carRepository.deleteCar(id);
-    if (result) {
-      return true; 
-    } else {
+  async deleteCar(id: string): Promise<void> {
+    const car = await this.carRepository.getCarById(id);
+    if (!car) {
       throw new createError.NotFound('Car not found');
     }
+    const reserves = await this.reserveRepository.getReservesByUserId(id);
+    reserves.forEach(async reserve => {
+       await this.reserveRepository.deleteReserve(reserve._id.toString())
+    });
+    
+    await this.carRepository.deleteCar(id);
+    
   }
   
   

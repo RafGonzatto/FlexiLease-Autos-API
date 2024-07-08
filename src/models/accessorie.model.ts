@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 
 export class Accessorie {
   @ObjectIdColumn()
-  _id: ObjectId;
+  _id?: ObjectId;
 
   @Column()
   description: string;

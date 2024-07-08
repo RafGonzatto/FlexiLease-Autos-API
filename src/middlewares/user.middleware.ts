@@ -14,7 +14,7 @@ export const userMiddleware = (req: Request, res: Response, next: NextFunction) 
       email: "john.doe@example.com",
       password: "123456",
       cep: "99010051",
-      qualified: "yes"
+      qualified: "sim"
     };
 
     const errorMessages = validation.error.errors.map((error) => ({

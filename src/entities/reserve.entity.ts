@@ -17,14 +17,14 @@ export class Reserve extends BaseEntity implements IReserve {
   end_date: string;
 
   @Column()
-  id_user: ObjectId; 
+  id_user: string; 
 
   @ManyToOne(() => User, user => user.reserves, { eager: true }) 
   @JoinColumn({ name: 'id_user', referencedColumnName: '_id' }) 
   user: User;
 
   @Column()
-  id_car: ObjectId; 
+  id_car: string; 
 
   @ManyToOne(() => Car, car => car.reserves, { eager: true }) 
   @JoinColumn({ name: 'id_car', referencedColumnName: '_id' }) 

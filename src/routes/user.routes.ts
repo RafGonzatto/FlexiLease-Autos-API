@@ -48,7 +48,7 @@ const userController = container.resolve(UserController)
  *                 minLength: 8
  *               qualified:
  *                 type: string
- *                 example: "yes/no" 
+ *                 example: "sim/não" 
  *             required:
  *               - name
  *               - cpf
@@ -58,7 +58,7 @@ const userController = container.resolve(UserController)
  *               - cep
  *               - qualified
  *     responses:
- *       '200':
+ *       '201':
  *         description: Created user object
  *         content:
  *           application/json:
@@ -92,7 +92,7 @@ const userController = container.resolve(UserController)
  *               email: "john.doe@example.com"
  *               password: "123456"
  *               cep: "99010051"
- *               qualified: "yes"
+ *               qualified: "sim"
  *       '400':
  *         description: Invalid input, validation error or  or CPF invalid
  *         content:
@@ -177,7 +177,7 @@ router.get('/user/:id', userController.getUserById.bind(userController));
  *                 minLength: 8
  *               qualified:
  *                 type: string
- *                 example: "yes/no" 
+ *                 example: "sim/não" 
  *             required:
  *               - name
  *               - cpf
@@ -221,7 +221,7 @@ router.get('/user/:id', userController.getUserById.bind(userController));
  *               email: "john.doe@example.com"
  *               password: "123456"
  *               cep: "99010051"
- *               qualified: "yes"
+ *               qualified: "sim"
  *       '400':
  *         description: Invalid input, validation error or  or CPF invalid
  *         content:

@@ -7,7 +7,7 @@ const userSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
   cep: z.string().min(8, { message: "CEP must be at least 8 characters long" }),
-  qualified: z.enum(['yes', 'no'], { message: "Qualified must be either 'yes' or 'no'" }),
+  qualified: z.enum(['sim', 'não'], { message: "Qualified must be either 'sim' or 'não'" }),
 }).refine(data => {
   const birthDateParts = data.birth.split('/');
   const birthDate = new Date(+birthDateParts[2], +birthDateParts[1] - 1, +birthDateParts[0]);
@@ -22,7 +22,5 @@ const userSchema = z.object({
   message: 'You must be at least 18 years old.',
   path: ['birth'],
 });
-
-// Example of how to use the schema with an example user object
 
 export {userSchema}
