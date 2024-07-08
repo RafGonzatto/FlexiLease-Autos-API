@@ -7,7 +7,7 @@ import verifyToken from '../middlewares/auth.middleware';
 const router = Router()
 const carController = container.resolve(CarController)
 
-//router.use('/car', verifyToken);
+router.use('/car', verifyToken);
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ const carController = container.resolve(CarController)
  *               - accessories
  *               - number_of_passengers
  *     responses:
- *       '200':
+ *       '201':
  *         description: Created car object
  *         content:
  *           application/json:
@@ -91,6 +91,10 @@ router.post(
  *     tags: [Cars]
  *     parameters:
  *       - in: query
+ *         name: _id
+ *         schema:
+ *           type: string
+ *       - in: query
  *         name: model
  *         schema:
  *           type: string
@@ -111,17 +115,26 @@ router.post(
  *           type: number
  *         description: Daily rental value
  *       - in: query
- *         name: accessories
- *         schema:
- *           type: array
- *           items:
- *             type: string
- *         description: List of accessories
- *       - in: query
  *         name: number_of_passengers
  *         schema:
  *           type: number
  *         description: Number of passengers
+ *       - in: query
+ *         name: accessories_description
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         description: List of accessory descriptions
+ *         example: ["GPS", "Leather seats"]
+ *       - in: query
+ *         name: accessories_id
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *         description: List of accessory IDs
+ *         example: ["66841d9b983f8b0f66db46b3", "66841d9b983f8b0f66db46b4"]
  *       - in: query
  *         name: limit
  *         schema:
@@ -162,6 +175,8 @@ router.post(
  *                           properties:
  *                             description:
  *                               type: string
+ *                             _id:
+ *                               type: string
  *                       number_of_passengers:
  *                         type: number
  *                 total:
@@ -177,6 +192,7 @@ router.post(
  *       '500':
  *         description: Internal server error
  */
+
 router.get(
     '/car',
     carController.findCars.bind(carController)
@@ -330,6 +346,6 @@ router.put('/car/:id', carMiddleware, carController.updateCar.bind(carController
  *       '500':
  *         description: Internal server error
  */
-router.delete('/car/:id', carMiddleware, carController.deleteCar.bind(carController));
+router.delete('/car/:id', carController.deleteCar.bind(carController));
 
 export default router
