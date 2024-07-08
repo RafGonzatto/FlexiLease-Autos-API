@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, Column, ObjectIdColumn, OneToOne } from 'typeorm';
+import { Entity, BaseEntity, Column, ObjectIdColumn, OneToOne, OneToMany } from 'typeorm';
 import { ICar } from '../interfaces/car.interface';
 import { Reserve } from './reserve.entity';
 import { ObjectId } from 'mongodb'; 
@@ -26,7 +26,7 @@ export class Car extends BaseEntity implements ICar {
   @Column({ type: 'json' })
   accessories: Accessorie[];
 
-  @OneToOne(() => Reserve, reserve => reserve.car)
+  @OneToMany(() => Reserve, reserve => reserve.car)
   reserves: Reserve[];
 
   constructor() {
