@@ -114,6 +114,7 @@ describe('ReserveService', () => {
       });
 
     expect(response.status).toBe(HttpStatusCode.BadRequest);
+    expect(response.body.message).toBe('Validation failed');
   });
   it('should not create a reserve with a non existing user', async () => {
     const response = await request(baseUrl)
@@ -127,5 +128,21 @@ describe('ReserveService', () => {
       });
 
     expect(response.status).toBe(HttpStatusCode.NotFound);
+    expect(response.body.message).toBe('User not found');
+  });
+  
+  it('should not create a reserve with a non existing car', async () => {
+    const response = await request(baseUrl)
+      .post('/api/v1/reserve')
+      .set('Authorization', `Bearer ${jwtToken}`)
+      .send({
+        id_car: '668b5507b2a5b954a52f9b8d',
+        id_user: id_user,
+        start_date: '01/01/2022',
+        end_date: '10/01/2022',
+      });
+
+    expect(response.status).toBe(HttpStatusCode.NotFound);
+    expect(response.body.message).toBe('Car not found');
   });
 });
