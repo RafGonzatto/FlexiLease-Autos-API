@@ -40,15 +40,19 @@ const setupSwagger = () => {
   };
 
   const swaggerSpec = swaggerJSDoc(swaggerOptions);
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    swaggerOptions: {
-      docExpansion: 'none',
-      filter: true,
-      showRequestHeaders: true,
-    },
-    customSiteTitle: 'FlexiLease Autos API Documentation',
-    customCss: '.swagger-ui .topbar { display: none }',
-  }));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      swaggerOptions: {
+        docExpansion: 'none',
+        filter: true,
+        showRequestHeaders: true,
+      },
+      customSiteTitle: 'FlexiLease Autos API Documentation',
+      customCss: '.swagger-ui .topbar { display: none }',
+    }),
+  );
 };
 
 const startServer = async () => {

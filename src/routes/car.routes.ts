@@ -1,11 +1,11 @@
-import { Router } from 'express'
-import { container } from 'tsyringe'
-import CarController from '../controllers/car.controller'
-import { carMiddleware } from '../middlewares/car.middleware'
+import { Router } from 'express';
+import { container } from 'tsyringe';
+import CarController from '../controllers/car.controller';
+import { carMiddleware } from '../middlewares/car.middleware';
 import verifyToken from '../middlewares/auth.middleware';
 
-const router = Router()
-const carController = container.resolve(CarController)
+const router = Router();
+const carController = container.resolve(CarController);
 
 router.use('/car', verifyToken);
 
@@ -77,11 +77,7 @@ router.use('/car', verifyToken);
  *       '500':
  *         description: Internal server error
  */
-router.post(
-    '/car',
-    carMiddleware,
-    carController.createCar.bind(carController),
-  )
+router.post('/car', carMiddleware, carController.createCar.bind(carController));
 
 /**
  * @swagger
@@ -193,11 +189,8 @@ router.post(
  *         description: Internal server error
  */
 
-router.get(
-    '/car',
-    carController.findCars.bind(carController)
-  );
-  /**
+router.get('/car', carController.findCars.bind(carController));
+/**
  * @swagger
  * /api/v1/car/{id}:
  *   get:
@@ -320,7 +313,11 @@ router.get('/car/:id', carController.getCarById.bind(carController));
  *       '500':
  *         description: Internal server error
  */
-router.put('/car/:id', carMiddleware, carController.updateCar.bind(carController));
+router.put(
+  '/car/:id',
+  carMiddleware,
+  carController.updateCar.bind(carController),
+);
 /**
  * @swagger
  * /api/v1/car/{id}:
@@ -348,4 +345,4 @@ router.put('/car/:id', carMiddleware, carController.updateCar.bind(carController
  */
 router.delete('/car/:id', carController.deleteCar.bind(carController));
 
-export default router
+export default router;

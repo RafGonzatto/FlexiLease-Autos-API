@@ -1,12 +1,11 @@
-import { Router } from 'express'
-import { container } from 'tsyringe'
-import ReserveController from '../controllers/reserve.controller'
-import { reserveMiddleware } from '../middlewares/reserve.middleware'
+import { Router } from 'express';
+import { container } from 'tsyringe';
+import ReserveController from '../controllers/reserve.controller';
+import { reserveMiddleware } from '../middlewares/reserve.middleware';
 import verifyToken from '../middlewares/auth.middleware';
 
-
-const router = Router()
-const reserveController = container.resolve(ReserveController)
+const router = Router();
+const reserveController = container.resolve(ReserveController);
 
 router.use('/reserve', verifyToken);
 
@@ -53,8 +52,12 @@ router.use('/reserve', verifyToken);
  *         description: Internal server error
  */
 
-router.post('/reserve', reserveMiddleware, reserveController.createReserve.bind(reserveController));
-export default router
+router.post(
+  '/reserve',
+  reserveMiddleware,
+  reserveController.createReserve.bind(reserveController),
+);
+export default router;
 /**
  * @swagger
  * /api/v1/reserve/{id}:
@@ -99,7 +102,11 @@ export default router
  *         description: Internal server error
  */
 
-router.put('/reserve/:id', reserveMiddleware, reserveController.updateReserve.bind(reserveController));
+router.put(
+  '/reserve/:id',
+  reserveMiddleware,
+  reserveController.updateReserve.bind(reserveController),
+);
 
 /**
  * @swagger
@@ -123,7 +130,10 @@ router.put('/reserve/:id', reserveMiddleware, reserveController.updateReserve.bi
  *         description: Internal server error
  */
 
-router.delete('/reserve/:id', reserveController.deleteReserve.bind(reserveController));
+router.delete(
+  '/reserve/:id',
+  reserveController.deleteReserve.bind(reserveController),
+);
 /**
  * @swagger
  * /api/v1/reserve:
@@ -218,4 +228,7 @@ router.get('/reserve', reserveController.findReserves.bind(reserveController));
  *         description: Internal server error
  */
 
-router.get('/reserve/:id', reserveController.getReserveById.bind(reserveController));
+router.get(
+  '/reserve/:id',
+  reserveController.getReserveById.bind(reserveController),
+);

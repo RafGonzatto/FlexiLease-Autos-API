@@ -1,12 +1,10 @@
-import { Router } from 'express'
-import { container } from 'tsyringe'
-import UserController from '../controllers/user.controller'
-import { userMiddleware } from '../middlewares/user.middleware'
+import { Router } from 'express';
+import { container } from 'tsyringe';
+import UserController from '../controllers/user.controller';
+import { userMiddleware } from '../middlewares/user.middleware';
 
-const router = Router()
-const userController = container.resolve(UserController)
-
-
+const router = Router();
+const userController = container.resolve(UserController);
 
 /**
  * @swagger
@@ -34,21 +32,21 @@ const userController = container.resolve(UserController)
  *                 example: "XXX.XXX.XXX-XX"
  *               birth:
  *                 type: string
- *                 example: "DD/MM/YYYY" 
+ *                 example: "DD/MM/YYYY"
  *               email:
  *                 type: string
  *                 format: email
  *               password:
  *                 type: string
- *                 example: "XXXXXX" 
+ *                 example: "XXXXXX"
  *                 minLength: 6
  *               cep:
  *                 type: string
- *                 example: "XXXXXXXX" 
+ *                 example: "XXXXXXXX"
  *                 minLength: 8
  *               qualified:
  *                 type: string
- *                 example: "sim/não" 
+ *                 example: "sim/não"
  *             required:
  *               - name
  *               - cpf
@@ -107,11 +105,11 @@ const userController = container.resolve(UserController)
  *         description: Internal server error
  */
 router.post(
-    '/user',
-    userMiddleware,
-    userController.createUser.bind(userController),
-  );
-  
+  '/user',
+  userMiddleware,
+  userController.createUser.bind(userController),
+);
+
 /**
  * @swagger
  * /api/v1/user/{id}:
@@ -134,7 +132,6 @@ router.post(
  *         description: Internal server error
  */
 router.get('/user/:id', userController.getUserById.bind(userController));
-
 
 /**
  * @swagger
@@ -163,21 +160,21 @@ router.get('/user/:id', userController.getUserById.bind(userController));
  *                 example: "XXX.XXX.XXX-XX"
  *               birth:
  *                 type: string
- *                 example: "DD/MM/YYYY" 
+ *                 example: "DD/MM/YYYY"
  *               email:
  *                 type: string
  *                 format: email
  *               password:
  *                 type: string
- *                 example: "XXXXXX" 
+ *                 example: "XXXXXX"
  *                 minLength: 6
  *               cep:
  *                 type: string
- *                 example: "XXXXXXXX" 
+ *                 example: "XXXXXXXX"
  *                 minLength: 8
  *               qualified:
  *                 type: string
- *                 example: "sim/não" 
+ *                 example: "sim/não"
  *             required:
  *               - name
  *               - cpf
@@ -236,9 +233,9 @@ router.get('/user/:id', userController.getUserById.bind(userController));
  *         description: Internal server error
  */
 router.put(
-    '/user/:id',
-    userMiddleware,
-    userController.updateUser.bind(userController),
+  '/user/:id',
+  userMiddleware,
+  userController.updateUser.bind(userController),
 );
 
 /**
@@ -279,7 +276,8 @@ router.put(
  *       '500':
  *         description: Internal server error
  */
-router.post('/authenticate',
+router.post(
+  '/authenticate',
   userController.authenticateUser.bind(userController),
 );
 /**
@@ -355,7 +353,7 @@ router.delete('/user/:id', userController.deleteUser.bind(userController));
  *         name: neighborhood
  *         schema:
  *           type: string
- *         description: Filter by user's neighborhood 
+ *         description: Filter by user's neighborhood
  *       - in: query
  *         name: locality
  *         schema:
@@ -400,5 +398,4 @@ router.delete('/user/:id', userController.deleteUser.bind(userController));
  */
 router.get('/users', userController.getAllUsers.bind(userController));
 
-  export default router;
-  
+export default router;

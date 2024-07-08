@@ -12,7 +12,7 @@ let reservesRepository: IReserveRepository;
 
 beforeAll(() => {
   carsRepository = new CarRepositoryInMemory();
-  reservesRepository = new ReserveRepositoryInMemory(); 
+  reservesRepository = new ReserveRepositoryInMemory();
   createCarService = new CarService(carsRepository, reservesRepository);
 });
 beforeEach(async () => {
@@ -21,15 +21,12 @@ beforeEach(async () => {
 describe('Car Service Integration Tests', () => {
   it('should be able to create a new car', async () => {
     const carData: ICar = {
-      model: "Civic S10 2.8",
-      color: "Silver",
-      year: "2020",
+      model: 'Civic S10 2.8',
+      color: 'Silver',
+      year: '2020',
       value_per_day: 150,
-      accessories: [
-        { description: "GPS" },
-        { description: "Leather seats" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'GPS' }, { description: 'Leather seats' }],
+      number_of_passengers: 5,
     };
 
     const newCar = await createCarService.createCar(carData);
@@ -45,33 +42,27 @@ describe('Car Service Integration Tests', () => {
 
   it('should be able to find all cars with pagination', async () => {
     const carData1: ICar = {
-      model: "Civic S10 2.8",
-      color: "Beige",
-      year: "2020",
+      model: 'Civic S10 2.8',
+      color: 'Beige',
+      year: '2020',
       value_per_day: 150,
-      accessories: [
-        { description: "GPS" },
-        { description: "Leather seats" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'GPS' }, { description: 'Leather seats' }],
+      number_of_passengers: 5,
     };
 
     const carData2: ICar = {
-      model: "Corolla 1.8",
-      color: "Beige",
-      year: "2021",
+      model: 'Corolla 1.8',
+      color: 'Beige',
+      year: '2021',
       value_per_day: 160,
-      accessories: [
-        { description: "Bluetooth" },
-        { description: "Sunroof" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'Bluetooth' }, { description: 'Sunroof' }],
+      number_of_passengers: 5,
     };
 
     await carsRepository.createCar(carData1);
     await carsRepository.createCar(carData2);
 
-    const filters = {"color": "Beige"};
+    const filters = { color: 'Beige' };
     const { cars, total } = await createCarService.getAllCars(filters, 10, 0);
 
     expect(cars).toHaveLength(2);
@@ -80,19 +71,18 @@ describe('Car Service Integration Tests', () => {
 
   it('should be able to get a car by ID', async () => {
     const carData: ICar = {
-      model: "Civic S10 2.8",
-      color: "Silver",
-      year: "2020",
+      model: 'Civic S10 2.8',
+      color: 'Silver',
+      year: '2020',
       value_per_day: 150,
-      accessories: [
-        { description: "GPS" },
-        { description: "Leather seats" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'GPS' }, { description: 'Leather seats' }],
+      number_of_passengers: 5,
     };
 
     const newCar = await createCarService.createCar(carData);
-    const foundCar = await createCarService.getCarById(newCar._id.valueOf().toString());
+    const foundCar = await createCarService.getCarById(
+      newCar._id.valueOf().toString(),
+    );
 
     expect(foundCar).not.toBeNull();
     expect(foundCar?._id).toBe(newCar._id);
@@ -106,61 +96,61 @@ describe('Car Service Integration Tests', () => {
 
   it('should be able to update a car', async () => {
     const carData: ICar = {
-      model: "Civic S10 2.8",
-      color: "Silver",
-      year: "2020",
+      model: 'Civic S10 2.8',
+      color: 'Silver',
+      year: '2020',
       value_per_day: 150,
-      accessories: [
-        { description: "GPS" },
-        { description: "Leather seats" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'GPS' }, { description: 'Leather seats' }],
+      number_of_passengers: 5,
     };
 
     const newCar = await createCarService.createCar(carData);
 
     const updatedCarData: ICar = {
-      model: "Civic S10 3.0",
-      color: "Red",
-      year: "2021",
+      model: 'Civic S10 3.0',
+      color: 'Red',
+      year: '2021',
       value_per_day: 100,
-      accessories: [
-        { description: "GPS" },
-        { description: "Leather seats" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'GPS' }, { description: 'Leather seats' }],
+      number_of_passengers: 5,
     };
 
-    const updatedCar = await createCarService.updateCar(newCar._id.valueOf().toString(), updatedCarData);
+    const updatedCar = await createCarService.updateCar(
+      newCar._id.valueOf().toString(),
+      updatedCarData,
+    );
 
     expect(updatedCar).not.toBeNull();
     expect(updatedCar?._id).toBe(newCar._id);
-    expect(updatedCar?.color).toBe("Red");
+    expect(updatedCar?.color).toBe('Red');
     expect(updatedCar?.model).toBe(updatedCarData.model);
     expect(updatedCar?.year).toBe(updatedCarData.year);
     expect(updatedCar?.value_per_day).toBe(updatedCarData.value_per_day);
-    expect(updatedCar?.accessories).toHaveLength(updatedCarData.accessories.length);
-    expect(updatedCar?.number_of_passengers).toBe(updatedCarData.number_of_passengers);
+    expect(updatedCar?.accessories).toHaveLength(
+      updatedCarData.accessories.length,
+    );
+    expect(updatedCar?.number_of_passengers).toBe(
+      updatedCarData.number_of_passengers,
+    );
   });
 
   it('should be able to delete a car', async () => {
     const carData: ICar = {
-      model: "Civic S10 2.8",
-      color: "Silver",
-      year: "2020",
+      model: 'Civic S10 2.8',
+      color: 'Silver',
+      year: '2020',
       value_per_day: 150,
-      accessories: [
-        { description: "GPS" },
-        { description: "Leather seats" }
-      ],
-      number_of_passengers: 5
+      accessories: [{ description: 'GPS' }, { description: 'Leather seats' }],
+      number_of_passengers: 5,
     };
 
     const newCar = await createCarService.createCar(carData);
 
     await createCarService.deleteCar(newCar._id.valueOf().toString());
 
-    const foundCar = await createCarService.getCarById(newCar._id.valueOf().toString());
+    const foundCar = await createCarService.getCarById(
+      newCar._id.valueOf().toString(),
+    );
 
     expect(foundCar).toBeNull();
   });

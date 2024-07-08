@@ -1,7 +1,7 @@
-import { Entity, BaseEntity, Column, ObjectIdColumn, OneToMany  } from 'typeorm';
+import { Entity, BaseEntity, Column, ObjectIdColumn, OneToMany } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
 import { Reserve } from './reserve.entity';
-import { ObjectId } from 'mongodb'; 
+import { ObjectId } from 'mongodb';
 
 @Entity({ name: 'User' })
 export class User extends BaseEntity implements IUser {
@@ -44,6 +44,6 @@ export class User extends BaseEntity implements IUser {
   @Column()
   uf: string;
 
-  @OneToMany(() => Reserve, reserve => reserve.user)
+  @OneToMany(() => Reserve, (reserve) => reserve.user)
   reserves: Reserve[];
 }

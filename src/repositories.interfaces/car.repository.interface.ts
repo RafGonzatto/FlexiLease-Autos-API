@@ -7,6 +7,8 @@ export interface ICarRepository {
   createCar(carData: ICar): Promise<ICar>;
   updateCar(carData: Partial<ICar>): Promise<ICar | undefined>;
   deleteCar(id: string): Promise<void>;
-  findAllWithPagination(options:FindManyOptions): Promise<{ cars: ICar[], total: number }> 
-  clear(): Promise<void>; 
+  findAllWithPagination(
+    options: FindManyOptions,
+  ): Promise<{ cars: ICar[]; total: number }>;
+  clear(): Promise<void>;
 }

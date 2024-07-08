@@ -17,17 +17,23 @@ class ReserveRepositoryInMemory implements IReserveRepository {
     this.reserves = [];
   }
 
-  async findAllWithPagination(options: any): Promise<{ reserves: IReserve[]; total: number }> {
+  async findAllWithPagination(
+    options: any,
+  ): Promise<{ reserves: IReserve[]; total: number }> {
     const { where = {}, skip = 0, take = 10 } = options;
     let filteredReserves = this.reserves;
 
     if (where.id_user && where.id_user.$regex) {
       const regex = new RegExp(where.color.$regex, where.color.$options);
-      filteredReserves = filteredReserves.filter(reserve => regex.test(reserve.id_user));
+      filteredReserves = filteredReserves.filter((reserve) =>
+        regex.test(reserve.id_user),
+      );
     }
     if (where.id_car && where.id_car.$regex) {
       const regex = new RegExp(where.color.$regex, where.color.$options);
-      filteredReserves = filteredReserves.filter(reserve => regex.test(reserve.id_car));
+      filteredReserves = filteredReserves.filter((reserve) =>
+        regex.test(reserve.id_car),
+      );
     }
     const total = filteredReserves.length;
     const reserves = filteredReserves.slice(skip, skip + take);
@@ -35,28 +41,40 @@ class ReserveRepositoryInMemory implements IReserveRepository {
   }
 
   async getReserveById(id: string): Promise<IReserve | null> {
-    return this.reserves.find(reserve => reserve._id.valueOf() === id) || null;
+    return (
+      this.reserves.find((reserve) => reserve._id.valueOf() === id) || null
+    );
   }
 
-  async updateReserve(reserveData: Partial<IReserve>): Promise<IReserve | null> {
-    const index = this.reserves.findIndex(reserve => reserve._id.valueOf() === reserveData._id);
+  async updateReserve(
+    reserveData: Partial<IReserve>,
+  ): Promise<IReserve | null> {
+    const index = this.reserves.findIndex(
+      (reserve) => reserve._id.valueOf() === reserveData._id,
+    );
     if (index === -1) return null;
-    
+
     const updatedReserve = Object.assign(this.reserves[index], reserveData);
     this.reserves[index] = updatedReserve;
     return updatedReserve;
   }
 
   async deleteReserve(id: string): Promise<void> {
-    this.reserves = this.reserves.filter(reserve => reserve._id.valueOf()  !== id);
+    this.reserves = this.reserves.filter(
+      (reserve) => reserve._id.valueOf() !== id,
+    );
   }
 
   async getReservesByUserId(userId: string): Promise<IReserve[]> {
-    return this.reserves.filter(reserve => reserve.id_user.valueOf() === userId);
+    return this.reserves.filter(
+      (reserve) => reserve.id_user.valueOf() === userId,
+    );
   }
 
   async getReservesByCarId(carId: string): Promise<IReserve[]> {
-    return this.reserves.filter(reserve => reserve.id_car.valueOf() === carId);
+    return this.reserves.filter(
+      (reserve) => reserve.id_car.valueOf() === carId,
+    );
   }
 }
 

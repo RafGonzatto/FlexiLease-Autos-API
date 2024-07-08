@@ -1,7 +1,14 @@
-import { Entity, BaseEntity, Column, ObjectIdColumn, OneToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  Column,
+  ObjectIdColumn,
+  OneToOne,
+  OneToMany,
+} from 'typeorm';
 import { ICar } from '../interfaces/car.interface';
 import { Reserve } from './reserve.entity';
-import { ObjectId } from 'mongodb'; 
+import { ObjectId } from 'mongodb';
 
 @Entity({ name: 'Car' })
 export class Car extends BaseEntity implements ICar {
@@ -26,7 +33,7 @@ export class Car extends BaseEntity implements ICar {
   @Column({ type: 'json' })
   accessories: Accessorie[];
 
-  @OneToMany(() => Reserve, reserve => reserve.car)
+  @OneToMany(() => Reserve, (reserve) => reserve.car)
   reserves: Reserve[];
 
   constructor() {
@@ -41,6 +48,6 @@ export class Accessorie {
 
   constructor(description: string) {
     this.description = description;
-    this._id = new ObjectId(); 
+    this._id = new ObjectId();
   }
 }

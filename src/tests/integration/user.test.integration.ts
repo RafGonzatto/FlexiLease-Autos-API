@@ -5,7 +5,7 @@ import UserRepositoryInMemory from '../../repositories.in.memory/user.repository
 import ReserveRepositoryInMemory from '../../repositories.in.memory/reserve.repository.in.memory';
 import UserService from '../../services/user.service';
 import { IUser } from '../../interfaces/user.interface';
-import createError from 'http-errors'
+import createError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 
 let createUserService: UserService;
@@ -18,7 +18,7 @@ beforeEach(async () => {
 
 beforeAll(() => {
   usersRepository = new UserRepositoryInMemory();
-  reservesRepository = new ReserveRepositoryInMemory(); 
+  reservesRepository = new ReserveRepositoryInMemory();
   createUserService = new UserService(usersRepository, reservesRepository);
 });
 
@@ -75,41 +75,41 @@ describe('User Service Integration Tests', () => {
       cep: '98801613',
     };
     try {
-       await createUserService.updateUser(updatedUser);
+      await createUserService.updateUser(updatedUser);
     } catch (error) {
       expect(error).toBeInstanceOf(createError.HttpError);
       expect(error.status).toBe(404);
       expect(error.message).toBe('User not found');
     }
   });
-  });
+});
 
-  it('should be able to delete a user', async () => {
-    const createUser: IUser = {
-      name: 'Rafael teste',
-      email: 'delete@gmail.com',
-      birth: '01/01/2000',
-      password: '123456',
-      cpf: '311.624.600-91',
-      qualified: 'sim',
-      cep: '98801613',
-    };
+it('should be able to delete a user', async () => {
+  const createUser: IUser = {
+    name: 'Rafael teste',
+    email: 'delete@gmail.com',
+    birth: '01/01/2000',
+    password: '123456',
+    cpf: '311.624.600-91',
+    qualified: 'sim',
+    cep: '98801613',
+  };
 
-    const user = await createUserService.createUser(createUser);
+  const user = await createUserService.createUser(createUser);
 
-    try {
-      await createUserService.deleteUser(user._id.valueOf().toString());
+  try {
+    await createUserService.deleteUser(user._id.valueOf().toString());
   } catch (error) {
     fail('deleteUser threw an error: ' + error);
   }
-  });
+});
 
-  it('should not be able to delete a non-existing user', async () => {
-    try {
-       await createUserService.deleteUser(uuidv4());
-    } catch (error) {
-      expect(error).toBeInstanceOf(createError.HttpError);
-      expect(error.status).toBe(404);
-      expect(error.message).toBe('User not found');
-    }
- });
+it('should not be able to delete a non-existing user', async () => {
+  try {
+    await createUserService.deleteUser(uuidv4());
+  } catch (error) {
+    expect(error).toBeInstanceOf(createError.HttpError);
+    expect(error.status).toBe(404);
+    expect(error.message).toBe('User not found');
+  }
+});

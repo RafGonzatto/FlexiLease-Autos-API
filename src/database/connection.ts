@@ -13,7 +13,7 @@ if (!MONGODB_URI) {
   throw new Error('MONGODB_URI must be defined in the environment variables');
 }
 
-let databaseName = MONGODB_DB; 
+let databaseName = MONGODB_DB;
 
 if (NODE_ENV === 'test' && MONGODB_TEST_DB) {
   databaseName = MONGODB_TEST_DB;

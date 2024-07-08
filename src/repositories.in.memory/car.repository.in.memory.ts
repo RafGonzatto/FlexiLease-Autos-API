@@ -6,7 +6,7 @@ class CarRepositoryInMemory implements ICarRepository {
   private cars: ICar[] = [];
 
   async createCar(carData: ICar): Promise<ICar> {
-    carData._id = uuidv4()
+    carData._id = uuidv4();
     return await this.save(carData);
   }
   async save(car: ICar): Promise<ICar> {
@@ -17,13 +17,15 @@ class CarRepositoryInMemory implements ICarRepository {
     this.cars = [];
   }
 
-  async findAllWithPagination(options: any): Promise<{ cars: ICar[]; total: number }> {
+  async findAllWithPagination(
+    options: any,
+  ): Promise<{ cars: ICar[]; total: number }> {
     const { where = {}, skip = 0, take = 10 } = options;
     let filteredCars = this.cars;
 
     if (where.color && where.color.$regex) {
       const regex = new RegExp(where.color.$regex, where.color.$options);
-      filteredCars = filteredCars.filter(car => regex.test(car.color));
+      filteredCars = filteredCars.filter((car) => regex.test(car.color));
     }
     const total = filteredCars.length;
     const cars = filteredCars.slice(skip, skip + take);
@@ -32,21 +34,23 @@ class CarRepositoryInMemory implements ICarRepository {
   }
 
   async getCarById(id: string): Promise<ICar | null> {
-    const car = this.cars.find(car => car._id.toString() === id);
+    const car = this.cars.find((car) => car._id.toString() === id);
     return car || null;
   }
 
   async updateCar(carData: Partial<ICar>): Promise<ICar | null> {
-    const index = this.cars.findIndex(car => car._id.valueOf()  === carData._id);
+    const index = this.cars.findIndex(
+      (car) => car._id.valueOf() === carData._id,
+    );
     if (index === -1) return null;
-    
+
     const updatedCar = Object.assign(this.cars[index], carData);
     this.cars[index] = updatedCar;
     return updatedCar;
   }
 
   async deleteCar(id: string): Promise<void> {
-    this.cars = this.cars.filter(car => car._id.valueOf() !== id);
+    this.cars = this.cars.filter((car) => car._id.valueOf() !== id);
   }
 }
 
