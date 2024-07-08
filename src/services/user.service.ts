@@ -1,6 +1,7 @@
 import { DeleteResult, FindManyOptions, Like, Not } from 'typeorm'
 import { IUser } from '../interfaces/user.interface'
 import { IUserRepository } from '../repositories.interfaces/user.repository.interface'
+import { IReserveRepository } from '../repositories.interfaces/reserve.repository.interface'
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors'
@@ -14,6 +15,8 @@ class UserService {
   constructor(
     @inject('UserRepository')
     private userRepository: IUserRepository,
+    @inject('ReserveRepository')
+    private reserveRepository: IReserveRepository,
   ) {}
 
   async createUser(userData: IUser): Promise<IUser> {
@@ -28,7 +31,6 @@ class UserService {
     if (existingCPF) {
       throw new createError.Conflict('CPF is already registered');
     }
-    console.log(existingCPF)
     const isValidCPF = await this.isValidCPF(userData.cpf);
     if (!isValidCPF) {
         throw new createError.BadRequest('Invalid CPF');
@@ -117,10 +119,15 @@ class UserService {
     if (!user) {
       throw new createError.NotFound('User not found');
     }
-    
-    await this.userRepository.deleteUser(user);
+    const reserves = await this.reserveRepository.getReservesByUserId(id);
+    if (reserves) {
+    reserves.forEach(async reserve => {
+       await this.reserveRepository.deleteReserve(reserve._id.toString())
+    });
+    }
+    await this.userRepository.deleteUser(id);
   }
-  async getAllUsers(params: GetAllUsersParams): Promise<{ users: User[], total: number, limit: number, offset: number, offsets: number }> {
+  async getAllUsers(params: GetAllUsersParams): Promise<{ users: IUser[], total: number, limit: number, offset: number, offsets: number }> {
     const { name, cpf, birth, email, cep, qualified, patio, complement, neighborhood, locality, uf, limit, offset } = params;
     const whereConditions: Record<string, any> = {};
 
