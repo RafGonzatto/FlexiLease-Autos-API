@@ -9,7 +9,6 @@ class UserController {
     try {
         const { name, cpf, birth, email, password, cep, qualified } = req.body;
 
-        // Aqui você pode montar o objeto de dados do usuário com os campos recebidos
         const userData : IUser = {
           name,
           cpf,
@@ -54,7 +53,6 @@ class UserController {
         const { id } = req.params;
         const { name, cpf, birth, email, password, cep, qualified } = req.body;
 
-        // Aqui você pode montar o objeto de dados do usuário com os campos recebidos
         const userData : IUser = {
           _id: new ObjectId(id),
           name,
@@ -86,10 +84,9 @@ class UserController {
     try {
       const { email, password } = req.body;
 
-        // Aqui você pode montar o objeto de dados do usuário com os campos recebidos
       const service = container.resolve(UserService)
       const token = await service.authenticateUser(email, password)
-      return res.status(200).json(token)
+      return res.status(200).json({token: token})
     } catch (error: any) {
       if (error && error.status) {
         return res

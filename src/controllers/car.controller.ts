@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import CarService from '../services/car.service'
 import { container } from 'tsyringe'
 import { ICar } from '../interfaces/car.interface'
+import { Accessorie } from '@/entities/car.entity';
 
 class CarController {
   async createCar(req: Request, res: Response) {
@@ -33,26 +34,44 @@ class CarController {
       }
     }
   }
+
   async findCars(req: Request, res: Response) {
     try {
-      const { model, color, year, value_per_day, accessories, number_of_passengers, limit = 10, offset = 0 } = req.query;
-      const filters: any = {};
-      if (model) filters.model = model;
-      if (color) filters.color = color;
-      if (year) filters.year = year;
-      if (value_per_day) filters.value_per_day = Number(value_per_day);
-      if (accessories) filters.accessories = { $elemMatch: { description: accessories } };
-      if (number_of_passengers) filters.number_of_passengers = Number(number_of_passengers);
+        const {
+            _id,
+            model,
+            color,
+            year,
+            value_per_day,
+            number_of_passengers,
+            accessories_description,
+            accessories_id,
+            limit = 10,
+            offset = 0
+        } = req.query;
 
-      const service = container.resolve(CarService);
-      const result = await service.findCars(filters, Number(limit), Number(offset));
+        const filters: any = {
+            _id,
+            model,
+            color,
+            year,
+            value_per_day,
+            number_of_passengers,
+            accessories_description: accessories_description ? (Array.isArray(accessories_description) ? accessories_description : [accessories_description]) : undefined,
+            accessories_id: accessories_id ? (Array.isArray(accessories_id) ? accessories_id : [accessories_id]) : undefined,
+        };
 
-      return res.status(200).json(result);
+        const service = container.resolve(CarService);
+        const result = await service.getAllCars(filters, Number(limit), Number(offset));
+
+        return res.status(200).json(result);
     } catch (error: any) {
-      console.error('Error handling fetching cars:', error);
-      return res.status(500).json({ code: 500, error: error.message.toString() });
+        console.error('Error handling fetching cars:', error);
+        return res.status(500).json({ code: 500, error: error.message.toString() });
     }
   }
+
+
   async getCarById(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -86,10 +105,7 @@ class CarController {
     try {
       const { id } = req.params;
       const service = container.resolve(CarService);
-      const deletedCar = await service.deleteCar(id);
-      if (!deletedCar) {
-        return res.status(404).json({ message: 'Car not found' });
-      }
+      await service.deleteCar(id);
       return res.status(200).json({ message: 'Car deleted successfully' });
     } catch (error: any) {
       console.error('Error deleting car:', error);
