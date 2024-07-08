@@ -1,11 +1,12 @@
 import { Car } from '../entities/car.entity';
 import { ICar } from '../interfaces/car.interface';
-import { DeleteResult } from 'typeorm';
+import { FindManyOptions } from 'typeorm';
 
 export interface ICarRepository {
   getCarById(id: string): Promise<ICar | undefined>;
-  createCar(carData: ICar): Promise<Car>;
-  updateCar(carData: Partial<ICar>): Promise<Car | undefined>;
-  deleteCar(id: string): Promise<boolean>;
-  findCars(filters: any, limit: number, offset: number): Promise<[Car[], number]>;
+  createCar(carData: ICar): Promise<ICar>;
+  updateCar(carData: Partial<ICar>): Promise<ICar | undefined>;
+  deleteCar(id: string): Promise<void>;
+  findAllWithPagination(options:FindManyOptions): Promise<{ cars: ICar[], total: number }> 
+  clear(): Promise<void>; 
 }

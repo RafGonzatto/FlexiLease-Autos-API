@@ -1,4 +1,4 @@
-import { FindManyOptions, getRepository, Like, Not, Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { User } from '../entities/user.entity';
 import {IUser} from '../interfaces/user.interface'
@@ -26,26 +26,21 @@ class UserRepository implements IUserRepository {
     const user = await this.repository.save(userData);
     return user;
   }
-  async deleteCar(id: string): Promise<boolean> {
-    const result = await this.repository.delete({ _id: new ObjectId(id)  });
-    return result.affected > 0;
-  }
   async findByEmailAndPassword(email: string, password: string): Promise<IUser | null> {
     return await this.repository.findOne({where:{ email:email, password:password }});
 
   }
-  async deleteUser(user: User): Promise<void> {
-    await this.repository.remove(user);
+  async deleteUser(id: string): Promise<void> {
+    await this.repository.delete({ _id: new ObjectId(id) });
   }
 
   async findAllWithPagination(options:FindManyOptions): Promise<{ users: User[], total: number }> {
     const users: User[] = await this.repository.find(options);
-
-    const total: number = await this.repository.count(options);
-
+    const total: number = users.length;
     return { users, total };
-}
-
+  }
+  async clear(): Promise<void> {
+  }
 }
 
 export default UserRepository

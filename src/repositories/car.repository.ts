@@ -1,4 +1,4 @@
-import { getRepository, Not, Repository } from 'typeorm';
+import { FindManyOptions, getRepository, Not, Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { Car } from '../entities/car.entity';
 import {ICar} from '../interfaces/car.interface'
@@ -16,30 +16,26 @@ class CarRepository implements ICarRepository {
     const car = this.repository.create(carData)
     return await this.repository.save(car);
   }
-  async findCars(filters: any, limit: number, offset: number): Promise<[Car[], number]> {
-    const query = this.repository.createQueryBuilder('car')
-      .skip(offset)
-      .take(limit);
+  async findAllWithPagination(options:FindManyOptions): Promise<{ cars: ICar[], total: number }> {
+    const cars: Car[] = await this.repository.find(options);
 
-    Object.keys(filters).forEach((key) => {
-      query.andWhere(`car.${key} = :${key}`, { [key]: filters[key] });
-    });
+    const total: number = await this.repository.count(options);
 
-    const [cars, total] = await query.getManyAndCount();
-    return [cars, total];
-  }
-  async getCarById(id: string): Promise<Car | null> {
+    return { cars, total };
+}
+
+  async getCarById(id: string): Promise<ICar | null> {
     return await this.repository.findOne({ where: { _id: new ObjectId(id) } });
   }
-  async updateCar(carData: Partial<Car>): Promise<Car | null> {
+  async updateCar(carData: Partial<Car>): Promise<ICar | null> {
     const car = await this.repository.save(carData);
     return car;
   }
-  async deleteCar(id: string): Promise<boolean> {
-    const result = await this.repository.delete({ _id: new ObjectId(id)  });
-    return result.affected > 0;
+  async deleteCar(id: string): Promise<void> {
+    await this.repository.delete({ _id: new ObjectId(id)  });
   }
-  
+  async clear(): Promise<void> {
+  }
 }
 
 export default CarRepository
