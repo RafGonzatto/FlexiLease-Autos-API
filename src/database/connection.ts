@@ -1,27 +1,31 @@
-import { DataSource } from 'typeorm'
-import dotenv from 'dotenv'
-import path from 'path'
-import { Car } from '../entities/car.entity'
-import { Reserve } from '../entities/reserve.entity'
-import { User } from '../entities/user.entity'
+import { DataSource } from 'typeorm';
+import dotenv from 'dotenv';
+import path from 'path';
+import { Car } from '../entities/car.entity';
+import { Reserve } from '../entities/reserve.entity';
+import { User } from '../entities/user.entity';
 
-dotenv.config()
+dotenv.config();
 
-const { MONGODB_URI , MONGODB_DB} = process.env
+const { MONGODB_URI, MONGODB_DB, MONGODB_TEST_DB, NODE_ENV } = process.env;
 
 if (!MONGODB_URI) {
-  throw new Error('MONGODB_URI must be defined in the environment variables')
+  throw new Error('MONGODB_URI must be defined in the environment variables');
 }
-const srcDir = path.resolve(__dirname, '..', '..', 'src')
+
+let databaseName = MONGODB_DB; 
+
+if (NODE_ENV === 'test' && MONGODB_TEST_DB) {
+  databaseName = MONGODB_TEST_DB;
+}
 
 const AppDataSource = new DataSource({
   type: 'mongodb',
   url: MONGODB_URI,
-  database: MONGODB_DB,
+  database: databaseName,
   synchronize: false,
-  logging: true,
+  logging: false,
   entities: [User, Reserve, Car],
-  migrations: ['dist/src/database/migrations/*.js'],
-})
+});
 
-export default AppDataSource
+export default AppDataSource;
